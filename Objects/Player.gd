@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 
-export (int) var max_speed = 225
+export (int) var max_speed = 225  # Acceleration dicates true max; round up to nearest multiple of acceleration
 export (int) var acceleration = 20
 
 onready var game_controller = get_tree().get_nodes_in_group("game_controller")[0]
@@ -34,7 +34,6 @@ func _process(delta):
 			current_speed -= acceleration
 		if (current_speed < 0):
 			current_speed += acceleration
-	
 	position += Vector2(0, current_speed) * delta
 	# NOTE: Clamping instead of decelerating might cause an animation problem
 	position.y = clamp(position.y, y_clamp, screen_size.y - y_clamp_margin)
