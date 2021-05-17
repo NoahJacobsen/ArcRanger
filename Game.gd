@@ -42,6 +42,7 @@ func _process(delta):
 		var velocity = Vector2(player_speed, 0)
 		$YSort/Moving.position += velocity * delta
 		move_spawn_path($YSort/Moving.position)
+		$YSort/Moving/GUI.update_speed(player_speed)
 
 func start_game():
 	game_active = true
