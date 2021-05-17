@@ -3,6 +3,8 @@ extends Node
 const GROUND_SIZE = Vector2(5, 2)
 const GROUND_Y_CLAMP = 125
 const GROUND_TILE_SIZE = 512
+const SPAWN_MARGIN = 10
+const SPAWN_OUT_BOUND = 128
 
 export (int) var x_clamp = 125
 export (int) var y_clamp = 150
@@ -28,6 +30,7 @@ var player_speed = 100
 
 func _ready():
 	randomize()
+	screen_size = $YSort/Moving/Camera2D.get_viewport_rect().size
 	$YSort/Moving/Player.position.y = y_start
 	generate_ground()
 	start_game()
@@ -38,11 +41,22 @@ func _process(delta):
 			player_speed += player_acceleration * delta
 		var velocity = Vector2(player_speed, 0)
 		$YSort/Moving.position += velocity * delta
+		move_spawn_path($YSort/Moving.position)
 
 func start_game():
 	game_active = true
 	set_timer_duration($StaticTimer, timer_static_min, timer_static_max)
-	
+
+func move_spawn_path(pos):
+	var curve = $YSort/Moving/SpawnPath.get_curve()
+	var point_pos = Vector2()
+	pos.x += screen_size.x + SPAWN_OUT_BOUND
+	pos.y = y_clamp + SPAWN_MARGIN
+	curve.set_point_position(0, pos)
+	pos.y = screen_size.y - y_clamp_margin - SPAWN_MARGIN
+	curve.set_point_position(1, pos)
+	$YSort/Moving/SpawnPath.set_curve(curve)
+
 func generate_ground():
 	ground_gen_pos.y = GROUND_Y_CLAMP
 	if not game_active:
@@ -66,12 +80,12 @@ func generate_ground():
 
 func set_timer_duration(timer, min_time, max_time):
 	var duration = rand_range(min_time, max_time)
-	print("Set ", timer.name, " duration to ", duration)
+	#print("Set ", timer.name, " duration to ", duration)
 	timer.wait_time = duration
 	timer.start()
 
 func _on_StaticTimer_timeout():
-	print("Spawning static...")
+	#print("Spawning static...")
 	spawn_loc.offset = randi()
 	var field = static_field.instance()
 	field.position = spawn_loc.position

@@ -6,7 +6,7 @@
 
 [sub_resource type="Curve2D" id=1]
 _data = {
-"points": PoolVector2Array( 0, 0, 0, 0, 1088, 0, 0, 0, 0, 0, 1088, 600 )
+"points": PoolVector2Array( 0, 0, 0, 0, 1088, 96, 0, 0, 0, 0, 1088, 576 )
 }
 
 [node name="Game" type="Node" groups=[
@@ -24,8 +24,9 @@ script = ExtResource( 2 )
 curve = SubResource( 1 )
 
 [node name="SpawnLocation" type="PathFollow2D" parent="YSort/Moving/SpawnPath"]
-position = Vector2( 1088, 0 )
-rotation = 1.5708
+position = Vector2( 1088, 156.511 )
+rotation = 1.57074
+offset = 60.57
 
 [node name="Player" parent="YSort/Moving" instance=ExtResource( 1 )]
 
