@@ -8,3 +8,6 @@ func update_health(new_health):
 
 func update_points(new_points):
 	$HBoxContainer/PointCounter/Value.text = str(new_points)
+
+func game_over():
+	pass

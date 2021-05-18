@@ -23,10 +23,11 @@ func _ready():
 
 func _physics_process(delta):
 	var dir = false
-	if (Input.is_action_pressed("ui_up")):
+	var game_active = game_controller.game_active
+	if (Input.is_action_pressed("ui_up") && game_active):
 		current_speed = lerp(current_speed, -max_speed, acceleration)
 		dir = true
-	if (Input.is_action_pressed("ui_down")):
+	if (Input.is_action_pressed("ui_down") && game_active):
 		current_speed = lerp(current_speed, max_speed, acceleration)
 		dir = true
 	if not dir:

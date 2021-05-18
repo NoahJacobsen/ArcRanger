@@ -43,21 +43,26 @@ func _ready():
 	randomize()
 	screen_size = $YSort/Moving/Camera2D.get_viewport_rect().size
 	$YSort/Moving/Player.position.y = y_start
-	generate_ground()
+	generate_ground(true)
 	start_game()
-	
+
+
+### Movement
 func _process(delta):
-	if game_active:
-		if stunned:
-			if (player_speed > player_min_speed):
-				player_speed -= player_stun_deceleration * delta
-		else:
-			if (player_speed < player_max_speed):
-				player_speed += player_acceleration * delta
-		var velocity = Vector2(player_speed, 0)
-		$YSort/Moving.position += velocity * delta
-		move_spawn_path($YSort/Moving.position)
-		gui.update_speed(player_speed)
+	if stunned or not game_active:
+		if (player_speed > player_min_speed):
+			player_speed -= player_stun_deceleration * delta
+	else:
+		if (player_speed < player_max_speed):
+			player_speed += player_acceleration * delta
+	if player_speed > player_max_speed:
+		player_speed = player_max_speed
+	elif player_speed < player_min_speed:
+		player_speed = player_min_speed
+	var velocity = Vector2(player_speed, 0)
+	$YSort/Moving.position += velocity * delta
+	move_spawn_path($YSort/Moving.position)
+	gui.update_speed(player_speed)
 
 func stun():
 	$StunTimer.wait_time = stun_wait
@@ -70,6 +75,7 @@ func _on_StunTimer_timeout():
 	stunned = false
 
 
+### Game Mechanics
 func start_game():
 	game_active = true
 	set_timer_duration($StaticTimer, timer_static_min, timer_static_max)
@@ -79,6 +85,15 @@ func start_game():
 	health = 3
 	gui.update_points(points)
 	gui.update_health(health)
+	
+func game_over():
+	print("GAME OVER")
+	game_active = false
+	gui.game_over()
+	$StaticTimer.stop()
+	$RocksTimer.stop()
+	$DivetTimer.stop()
+	$StunTimer.stop()
 
 func move_spawn_path(pos):
 	var curve = $YSort/Moving/SpawnPath.get_curve()
@@ -90,9 +105,9 @@ func move_spawn_path(pos):
 	curve.set_point_position(1, pos)
 	$YSort/Moving/SpawnPath.set_curve(curve)
 
-func generate_ground():
+func generate_ground(start=false):
 	ground_gen_pos.y = GROUND_Y_CLAMP
-	if not game_active:
+	if start:
 		for y in GROUND_SIZE.y:
 			for x in GROUND_SIZE.x:
 				var tile = ground_tile.instance()
@@ -132,8 +147,8 @@ func _on_RocksTimer_timeout():
 func _on_DivetTimer_timeout():
 	spawn_object(divet_tile.instance(), $DivetTimer, timer_divet_min, timer_divet_max)
 
-### Collision functions
 
+### Collision functions
 func collect_static():
 	points += static_value
 	gui.update_points(points)
@@ -141,7 +156,10 @@ func collect_static():
 func hit_rocks():
 	health -= 1
 	gui.update_health(health)
-	stun()
+	if (health == 0):
+		game_over()
+	else:
+		stun()
 	
 func hit_divet():
 	stun()
