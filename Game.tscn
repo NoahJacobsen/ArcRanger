@@ -42,9 +42,12 @@ current = true
 
 [node name="RocksTimer" type="Timer" parent="."]
 
+[node name="DivetTimer" type="Timer" parent="."]
+
 [node name="StunTimer" type="Timer" parent="."]
 one_shot = true
 
 [connection signal="timeout" from="StaticTimer" to="." method="_on_StaticTimer_timeout"]
 [connection signal="timeout" from="RocksTimer" to="." method="_on_RocksTimer_timeout"]
+[connection signal="timeout" from="DivetTimer" to="." method="_on_DivetTimer_timeout"]
 [connection signal="timeout" from="StunTimer" to="." method="_on_StunTimer_timeout"]

@@ -49,3 +49,7 @@ func _on_BikeArea_body_entered(body):
 		print("Hit rocks!")
 		body.hit()
 		game_controller.hit_rocks()
+	elif (body.TYPE == "divet"):
+		print("Hit divet!")
+		body.hit()
+		game_controller.hit_divet()

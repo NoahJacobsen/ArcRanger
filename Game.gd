@@ -11,7 +11,7 @@ export (int) var y_clamp = 150
 export (int) var y_clamp_margin = 25
 export (int) var y_start = 300
 export (int) var player_acceleration = 75
-export (int) var player_stun_deceleration = 400
+export (int) var player_stun_deceleration = 500
 export (int) var player_max_speed = 900
 export (int) var player_min_speed = 150
 export (float) var stun_wait = .7
@@ -19,13 +19,14 @@ export (float) var timer_static_min = 1.5
 export (float) var timer_static_max = 2.5
 export (float) var timer_rocks_min = 0.7
 export (float) var timer_rocks_max = 1.2
-export (float) var timer_divet_min = 2.0
-export (float) var timer_divet_max = 4.0
+export (float) var timer_divet_min = 3.0
+export (float) var timer_divet_max = 7.5
 export(int) var static_value = 10
 
 onready var ground_tile = preload("res://Objects/Tiles/Ground.tscn")
 onready var static_field = preload("res://Objects/Tiles/Static.tscn")
 onready var rocks_tile = preload("res://Objects/Tiles/Rocks.tscn")
+onready var divet_tile = preload("res://Objects/Tiles/Divet.tscn")
 onready var spawn_loc = $YSort/Moving/SpawnPath/SpawnLocation
 onready var gui = $YSort/Moving/GUI
 
@@ -73,6 +74,7 @@ func start_game():
 	game_active = true
 	set_timer_duration($StaticTimer, timer_static_min, timer_static_max)
 	set_timer_duration($RocksTimer, timer_rocks_min, timer_rocks_max)
+	set_timer_duration($DivetTimer, timer_divet_min, timer_divet_max)
 	points = 0
 	health = 3
 	gui.update_points(points)
@@ -127,6 +129,9 @@ func _on_StaticTimer_timeout():
 func _on_RocksTimer_timeout():
 	spawn_object(rocks_tile.instance(), $RocksTimer, timer_rocks_min, timer_rocks_max)
 
+func _on_DivetTimer_timeout():
+	spawn_object(divet_tile.instance(), $DivetTimer, timer_divet_min, timer_divet_max)
+
 ### Collision functions
 
 func collect_static():
@@ -137,6 +142,10 @@ func hit_rocks():
 	health -= 1
 	gui.update_health(health)
 	stun()
+	
+func hit_divet():
+	stun()
+
 
 
 
