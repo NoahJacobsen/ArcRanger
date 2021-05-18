@@ -1,8 +1,8 @@
 extends KinematicBody2D
 
 
-export (int) var max_speed = 225  # Acceleration dicates true max; round up to nearest multiple of acceleration
-export (int) var acceleration = 20
+export (int) var max_speed = 375  # Acceleration dicates true max; round up to nearest multiple of acceleration
+export (float) var acceleration = 0.08
 
 onready var game_controller = get_tree().get_nodes_in_group("game_controller")[0]
 
@@ -20,20 +20,32 @@ func _ready():
 	screen_size = get_viewport_rect().size
 	position.x = x_clamp
 
-func _process(delta):
-	var direction = Vector2()
+
+func _physics_process(delta):
+	var dir = false
 	if (Input.is_action_pressed("ui_up")):
-		direction.y -= 1
+		current_speed = lerp(current_speed, -max_speed, acceleration)
+		dir = true
 	if (Input.is_action_pressed("ui_down")):
-		direction.y += 1
-	if (direction.length() > 0):
-		if (current_speed < max_speed && current_speed > -max_speed):
-			current_speed += direction.y * acceleration
-	else:
-		if (current_speed > 0):
-			current_speed -= acceleration
-		if (current_speed < 0):
-			current_speed += acceleration
-	position += Vector2(0, current_speed) * delta
-	# NOTE: Clamping instead of decelerating might cause an animation problem
+		current_speed = lerp(current_speed, max_speed, acceleration)
+		dir = true
+	if not dir:
+		current_speed = lerp(current_speed, 0, acceleration)
+	move_and_slide(Vector2(0, current_speed))
 	position.y = clamp(position.y, y_clamp, screen_size.y - y_clamp_margin)
+	
+
+
+func _on_LanceArea_body_entered(body):
+	if (body.TYPE == "static"):
+		print("Hit static!")
+		body.hit()
+		game_controller.collect_static()
+
+
+
+func _on_BikeArea_body_entered(body):
+	if (body.TYPE == "rocks"):
+		print("Hit rocks!")
+		body.hit()
+		game_controller.hit_rocks()
