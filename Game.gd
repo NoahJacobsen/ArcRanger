@@ -41,6 +41,7 @@ var points = 0
 
 func _ready():
 	randomize()
+	gui.hide_message()
 	screen_size = $YSort/Moving/Camera2D.get_viewport_rect().size
 	$YSort/Moving/Player.position.y = y_start
 	generate_ground(true)
@@ -89,7 +90,7 @@ func start_game():
 func game_over():
 	print("GAME OVER")
 	game_active = false
-	gui.game_over()
+	gui.show_message("Game Over")
 	$StaticTimer.stop()
 	$RocksTimer.stop()
 	$DivetTimer.stop()
