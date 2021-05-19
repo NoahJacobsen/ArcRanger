@@ -1,6 +1,6 @@
 extends Node
 
-const GROUND_SIZE = Vector2(5, 2)
+const GROUND_SIZE = Vector2(5, 1)
 const GROUND_Y_CLAMP = 125
 const GROUND_TILE_SIZE = 512
 const SPAWN_MARGIN = 10
@@ -45,7 +45,7 @@ func _ready():
 	gui.show_buttons()
 	screen_size = $YSort/Moving/Camera2D.get_viewport_rect().size
 	$YSort/Moving/Player.position.y = y_start
-	generate_ground(true)
+	generate_ground(null, true)
 
 
 ### Movement
@@ -111,25 +111,26 @@ func move_spawn_path(pos):
 	curve.set_point_position(1, pos)
 	$YSort/Moving/SpawnPath.set_curve(curve)
 
-func generate_ground(start=false):
+func generate_ground(body, start=false):
 	ground_gen_pos.y = GROUND_Y_CLAMP
 	if start:
 		for y in GROUND_SIZE.y:
+			ground_gen_pos.x = 0
 			for x in GROUND_SIZE.x:
 				var tile = ground_tile.instance()
 				var ret = tile.connect("screen_exited", self, "generate_ground")
 				tile.position = ground_gen_pos
 				ground_gen_pos.x += GROUND_TILE_SIZE
 				$Tiles.add_child(tile)
-			ground_gen_pos.x = 0
 			ground_gen_pos.y += GROUND_TILE_SIZE
 	else:
-		for y in GROUND_SIZE.y:
-			var tile = ground_tile.instance()
-			var ret = tile.connect("screen_exited", self, "generate_ground")
-			tile.position = ground_gen_pos
-			ground_gen_pos.y += GROUND_TILE_SIZE
-			$Tiles.add_child(tile)
+		body.position = ground_gen_pos
+		#for y in GROUND_SIZE.y:
+		#	var tile = ground_tile.instance()
+		#	var ret = tile.connect("screen_exited", self, "generate_ground")
+		#	tile.position = ground_gen_pos
+		#	ground_gen_pos.y += GROUND_TILE_SIZE
+		#	$Tiles.add_child(tile)
 		ground_gen_pos.x += GROUND_TILE_SIZE
 
 func spawn_object(instance, timer, timer_min, timer_max):
