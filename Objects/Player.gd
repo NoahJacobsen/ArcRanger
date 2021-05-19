@@ -21,7 +21,7 @@ func _ready():
 	position.x = x_clamp
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	var dir = false
 	var game_active = game_controller.game_active
 	if (Input.is_action_pressed("ui_up") && game_active):
@@ -32,7 +32,7 @@ func _physics_process(delta):
 		dir = true
 	if not dir:
 		current_speed = lerp(current_speed, 0, acceleration)
-	move_and_slide(Vector2(0, current_speed))
+	var _ret = move_and_slide(Vector2(0, current_speed))
 	position.y = clamp(position.y, y_clamp, screen_size.y - y_clamp_margin)
 	
 

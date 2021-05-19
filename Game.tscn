@@ -34,10 +34,6 @@ offset = 60.57
 anchor_mode = 0
 current = true
 
-[node name="GUI" parent="YSort/Moving" instance=ExtResource( 3 )]
-margin_right = 1004.0
-margin_bottom = 600.0
-
 [node name="StaticTimer" type="Timer" parent="."]
 
 [node name="RocksTimer" type="Timer" parent="."]
@@ -47,9 +43,17 @@ margin_bottom = 600.0
 [node name="StunTimer" type="Timer" parent="."]
 one_shot = true
 
-[connection signal="quit_game" from="YSort/Moving/GUI" to="." method="quit_game"]
-[connection signal="start_game" from="YSort/Moving/GUI" to="." method="start_game"]
+[node name="GUILayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="GUI" parent="GUILayer" instance=ExtResource( 3 )]
+margin_left = 0.0
+margin_right = 0.0
+margin_bottom = 0.0
+
 [connection signal="timeout" from="StaticTimer" to="." method="_on_StaticTimer_timeout"]
 [connection signal="timeout" from="RocksTimer" to="." method="_on_RocksTimer_timeout"]
 [connection signal="timeout" from="DivetTimer" to="." method="_on_DivetTimer_timeout"]
 [connection signal="timeout" from="StunTimer" to="." method="_on_StunTimer_timeout"]
+[connection signal="quit_game" from="GUILayer/GUI" to="." method="quit_game"]
+[connection signal="start_game" from="GUILayer/GUI" to="." method="start_game"]

@@ -28,7 +28,7 @@ onready var static_field = preload("res://Objects/Tiles/Static.tscn")
 onready var rocks_tile = preload("res://Objects/Tiles/Rocks.tscn")
 onready var divet_tile = preload("res://Objects/Tiles/Divet.tscn")
 onready var spawn_loc = $YSort/Moving/SpawnPath/SpawnLocation
-onready var gui = $YSort/Moving/GUI
+onready var gui = $GUILayer/GUI
 
 var screen_size
 var game_active = false
@@ -108,7 +108,6 @@ func quit_game():
 
 func move_spawn_path(pos):
 	var curve = $YSort/Moving/SpawnPath.get_curve()
-	var point_pos = Vector2()
 	pos.x += screen_size.x + SPAWN_OUT_BOUND
 	pos.y = y_clamp + SPAWN_MARGIN
 	curve.set_point_position(0, pos)
@@ -124,7 +123,7 @@ func generate_ground(body, start=false):
 			ground_gen_pos.x = 0
 			for x in GROUND_SIZE.x:
 				var tile = ground_tile.instance()
-				var ret = tile.connect("screen_exited", self, "generate_ground")
+				var _ret = tile.connect("screen_exited", self, "generate_ground")
 				tile.position = ground_gen_pos
 				ground_gen_pos.x += GROUND_TILE_SIZE
 				$Tiles.add_child(tile)
@@ -158,19 +157,22 @@ func _on_DivetTimer_timeout():
 
 ### Collision functions
 func collect_static():
-	points += static_value
-	gui.update_points(points)
+	if game_active:
+		points += static_value
+		gui.update_points(points)
 	
 func hit_rocks():
-	health -= 1
-	gui.update_health(health)
-	if (health == 0):
-		game_over()
-	else:
-		stun()
+	if game_active:
+		health -= 1
+		gui.update_health(health)
+		if (health == 0):
+			game_over()
+		else:
+			stun()
 	
 func hit_divet():
-	stun()
+	if game_active:
+		stun()
 
 
 
