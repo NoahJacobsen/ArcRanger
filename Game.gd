@@ -86,8 +86,10 @@ func start_game():
 	health = 3
 	gui.update_points(points)
 	gui.update_health(health)
+	gui.show_stats()
 	gui.hide_message()
 	gui.hide_buttons()
+	gui.hide_credits()
 	
 func game_over():
 	print("GAME OVER")

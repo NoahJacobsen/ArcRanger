@@ -16,11 +16,12 @@ __meta__ = {
 
 [node name="Rows" type="VBoxContainer" parent="."]
 margin_right = 984.0
-margin_bottom = 454.0
+margin_bottom = 488.0
 size_flags_vertical = 0
 custom_constants/separation = 50
 
 [node name="Stats" type="HBoxContainer" parent="Rows"]
+visible = false
 margin_right = 984.0
 margin_bottom = 14.0
 custom_constants/separation = 150
@@ -78,11 +79,19 @@ margin_right = 68.0
 margin_bottom = 14.0
 text = "20"
 
+[node name="Credits" type="Label" parent="Rows"]
+margin_right = 984.0
+margin_bottom = 48.0
+text = "Made by Noah Jacobsen
+Special thanks to Joe Zlonicky
+2021 - Lunatic Games"
+align = 1
+
 [node name="Message" type="Label" parent="Rows"]
 margin_left = 462.0
-margin_top = 64.0
+margin_top = 98.0
 margin_right = 522.0
-margin_bottom = 314.0
+margin_bottom = 348.0
 rect_min_size = Vector2( 0, 250 )
 size_flags_horizontal = 4
 size_flags_vertical = 2
@@ -92,18 +101,18 @@ valign = 1
 
 [node name="Start" type="Button" parent="Rows"]
 margin_left = 417.0
-margin_top = 364.0
+margin_top = 398.0
 margin_right = 567.0
-margin_bottom = 384.0
+margin_bottom = 418.0
 rect_min_size = Vector2( 150, 0 )
 size_flags_horizontal = 4
 text = "Go Ranging"
 
 [node name="Quit" type="Button" parent="Rows"]
 margin_left = 454.0
-margin_top = 434.0
+margin_top = 468.0
 margin_right = 529.0
-margin_bottom = 454.0
+margin_bottom = 488.0
 rect_min_size = Vector2( 75, 0 )
 size_flags_horizontal = 4
 text = "Exit"
