@@ -16,6 +16,7 @@ var screen_size
 var x_clamp
 var y_clamp
 var y_clamp_margin
+var y_restriction_margin
 
 var current_speed = 0
 var stunned = false
@@ -24,16 +25,17 @@ func _ready():
 	x_clamp = game_controller.x_clamp
 	y_clamp = game_controller.y_clamp
 	y_clamp_margin = game_controller.y_clamp_margin
+	y_restriction_margin = game_controller.y_restriction_margin
 	screen_size = get_viewport_rect().size
 	position.x = x_clamp
 
 func _physics_process(_delta):
 	var dir = false
 	var game_active = game_controller.game_active
-	if (Input.is_action_pressed("ui_up") && game_active && !stunned):
+	if (Input.is_action_pressed("ui_up") && game_active && !stunned && (position.y > y_clamp + y_restriction_margin)):
 		current_speed = lerp(current_speed, -max_speed, acceleration)
 		dir = true
-	if (Input.is_action_pressed("ui_down") && game_active && !stunned):
+	if (Input.is_action_pressed("ui_down") && game_active && !stunned && (position.y < screen_size.y - y_clamp_margin - y_restriction_margin)):
 		current_speed = lerp(current_speed, max_speed, acceleration)
 		dir = true
 	if not dir:
@@ -41,7 +43,6 @@ func _physics_process(_delta):
 		if ($Sprite.animation != "straight"):
 			$Sprite.play("", true)
 	var _ret = move_and_slide(Vector2(0, current_speed))
-	position.y = clamp(position.y, y_clamp, screen_size.y - y_clamp_margin)
 	set_animation()
 
 func _on_LanceArea_body_entered(body):

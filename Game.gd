@@ -9,6 +9,7 @@ const SPAWN_OUT_BOUND = 128
 export (int) var x_clamp = 125
 export (int) var y_clamp = 150
 export (int) var y_clamp_margin = 25
+export (int) var y_restriction_margin = 90
 export (int) var y_start = 300
 export (int) var player_acceleration = 75
 export (int) var player_stun_deceleration = 500
