@@ -47,6 +47,7 @@ margin_bottom = 600.0
 [node name="StunTimer" type="Timer" parent="."]
 one_shot = true
 
+[connection signal="quit_game" from="YSort/Moving/GUI" to="." method="quit_game"]
 [connection signal="start_game" from="YSort/Moving/GUI" to="." method="start_game"]
 [connection signal="timeout" from="StaticTimer" to="." method="_on_StaticTimer_timeout"]
 [connection signal="timeout" from="RocksTimer" to="." method="_on_RocksTimer_timeout"]

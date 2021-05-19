@@ -1,6 +1,18 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://GUI.gd" type="Script" id=1]
+
+[sub_resource type="InputEventAction" id=1]
+action = "ui_select"
+
+[sub_resource type="ShortCut" id=2]
+shortcut = SubResource( 1 )
+
+[sub_resource type="InputEventAction" id=3]
+action = "ui_cancel"
+
+[sub_resource type="ShortCut" id=4]
+shortcut = SubResource( 3 )
 
 [node name="GUI" type="MarginContainer"]
 anchor_right = 1.0
@@ -106,6 +118,7 @@ margin_right = 567.0
 margin_bottom = 418.0
 rect_min_size = Vector2( 150, 0 )
 size_flags_horizontal = 4
+shortcut = SubResource( 2 )
 text = "Go Ranging"
 
 [node name="Quit" type="Button" parent="Rows"]
@@ -115,6 +128,7 @@ margin_right = 529.0
 margin_bottom = 488.0
 rect_min_size = Vector2( 75, 0 )
 size_flags_horizontal = 4
+shortcut = SubResource( 4 )
 text = "Exit"
 
 [connection signal="pressed" from="Rows/Start" to="." method="_on_Start_pressed"]

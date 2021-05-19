@@ -78,6 +78,8 @@ func _on_StunTimer_timeout():
 
 ### Game Mechanics
 func start_game():
+	if game_active:
+		return
 	game_active = true
 	set_timer_duration($StaticTimer, timer_static_min, timer_static_max)
 	set_timer_duration($RocksTimer, timer_rocks_min, timer_rocks_max)
@@ -100,6 +102,9 @@ func game_over():
 	$RocksTimer.stop()
 	$DivetTimer.stop()
 	$StunTimer.stop()
+	
+func quit_game():
+	get_tree().quit()
 
 func move_spawn_path(pos):
 	var curve = $YSort/Moving/SpawnPath.get_curve()
@@ -114,6 +119,7 @@ func move_spawn_path(pos):
 func generate_ground(body, start=false):
 	ground_gen_pos.y = GROUND_Y_CLAMP
 	if start:
+		# Triggers at game launch; generates tiles to GROUND_SIZE dimentions
 		for y in GROUND_SIZE.y:
 			ground_gen_pos.x = 0
 			for x in GROUND_SIZE.x:
@@ -124,13 +130,8 @@ func generate_ground(body, start=false):
 				$Tiles.add_child(tile)
 			ground_gen_pos.y += GROUND_TILE_SIZE
 	else:
-		body.position = ground_gen_pos
-		#for y in GROUND_SIZE.y:
-		#	var tile = ground_tile.instance()
-		#	var ret = tile.connect("screen_exited", self, "generate_ground")
-		#	tile.position = ground_gen_pos
-		#	ground_gen_pos.y += GROUND_TILE_SIZE
-		#	$Tiles.add_child(tile)
+		# Triggers when tile leaves viewport; sets tile x to current gen pos x
+		body.position.x = ground_gen_pos.x
 		ground_gen_pos.x += GROUND_TILE_SIZE
 
 func spawn_object(instance, timer, timer_min, timer_max):
