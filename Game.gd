@@ -29,6 +29,7 @@ onready var rocks_tile = preload("res://Objects/Tiles/Rocks.tscn")
 onready var divet_tile = preload("res://Objects/Tiles/Divet.tscn")
 onready var spawn_loc = $YSort/Moving/SpawnPath/SpawnLocation
 onready var gui = $GUILayer/GUI
+onready var player = $YSort/Moving/Player
 
 var screen_size
 var game_active = false
@@ -74,6 +75,7 @@ func stun():
 func _on_StunTimer_timeout():
 	print("Stun over")
 	stunned = false
+	player.stunned = false
 
 
 ### Game Mechanics
@@ -92,6 +94,7 @@ func start_game():
 	gui.hide_message()
 	gui.hide_buttons()
 	gui.hide_credits()
+	player.stunned = false
 	
 func game_over():
 	print("GAME OVER")
@@ -101,7 +104,6 @@ func game_over():
 	$StaticTimer.stop()
 	$RocksTimer.stop()
 	$DivetTimer.stop()
-	$StunTimer.stop()
 	
 func quit_game():
 	get_tree().quit()
