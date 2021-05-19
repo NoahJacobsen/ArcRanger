@@ -41,7 +41,7 @@ var points = 0
 
 func _ready():
 	randomize()
-	gui.show_message("Arc Ranger")
+	gui.show_message("ARC RANGER")
 	gui.show_buttons()
 	screen_size = $YSort/Moving/Camera2D.get_viewport_rect().size
 	$YSort/Moving/Player.position.y = y_start
@@ -96,7 +96,7 @@ func start_game():
 func game_over():
 	print("GAME OVER")
 	game_active = false
-	gui.show_message("Game Over")
+	gui.show_message("GAME OVER")
 	gui.show_buttons()
 	$StaticTimer.stop()
 	$RocksTimer.stop()

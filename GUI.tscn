@@ -1,11 +1,26 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://GUI.gd" type="Script" id=1]
+[ext_resource path="res://assets/LexendZetta-Regular.ttf" type="DynamicFontData" id=2]
+
+[sub_resource type="DynamicFont" id=5]
+extra_spacing_char = 2
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 32
+extra_spacing_char = 2
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=7]
+size = 20
+extra_spacing_char = 2
+font_data = ExtResource( 2 )
 
 [sub_resource type="InputEventAction" id=1]
 action = "ui_select"
 
-[sub_resource type="ShortCut" id=2]
+[sub_resource type="ShortCut" id=8]
 shortcut = SubResource( 1 )
 
 [sub_resource type="InputEventAction" id=3]
@@ -28,14 +43,14 @@ __meta__ = {
 
 [node name="Rows" type="VBoxContainer" parent="."]
 margin_right = 984.0
-margin_bottom = 488.0
+margin_bottom = 546.0
 size_flags_vertical = 0
 custom_constants/separation = 50
 
 [node name="Stats" type="HBoxContainer" parent="Rows"]
 visible = false
 margin_right = 984.0
-margin_bottom = 14.0
+margin_bottom = 20.0
 custom_constants/separation = 150
 alignment = 1
 __meta__ = {
@@ -43,93 +58,109 @@ __meta__ = {
 }
 
 [node name="HealthCounter" type="HBoxContainer" parent="Rows/Stats"]
-margin_left = 241.0
-margin_right = 303.0
-margin_bottom = 14.0
+margin_left = 203.0
+margin_right = 341.0
+margin_bottom = 20.0
 
 [node name="Label" type="Label" parent="Rows/Stats/HealthCounter"]
-margin_right = 50.0
-margin_bottom = 14.0
-text = "Health: "
+margin_right = 126.0
+margin_bottom = 20.0
+custom_fonts/font = SubResource( 5 )
+text = "HEALTH: "
 
 [node name="Value" type="Label" parent="Rows/Stats/HealthCounter"]
-margin_left = 54.0
-margin_right = 62.0
-margin_bottom = 14.0
+margin_left = 130.0
+margin_top = 3.0
+margin_right = 138.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 5 )
 text = "5"
 
 [node name="SpeedCounter" type="HBoxContainer" parent="Rows/Stats"]
-margin_left = 453.0
-margin_right = 524.0
-margin_bottom = 14.0
+margin_left = 491.0
+margin_right = 562.0
+margin_bottom = 20.0
 
 [node name="Label" type="Label" parent="Rows/Stats/SpeedCounter"]
+margin_top = 3.0
 margin_right = 43.0
-margin_bottom = 14.0
-text = "Speed:"
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 5 )
+text = "SPEED: "
 
 [node name="Value" type="Label" parent="Rows/Stats/SpeedCounter"]
 margin_left = 47.0
+margin_top = 3.0
 margin_right = 71.0
-margin_bottom = 14.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 5 )
 text = "100"
 
 [node name="PointCounter" type="HBoxContainer" parent="Rows/Stats"]
-margin_left = 674.0
-margin_right = 742.0
-margin_bottom = 14.0
+margin_left = 712.0
+margin_right = 780.0
+margin_bottom = 20.0
 alignment = 2
 
 [node name="Label" type="Label" parent="Rows/Stats/PointCounter"]
+margin_top = 3.0
 margin_right = 48.0
-margin_bottom = 14.0
-text = "Points: "
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 5 )
+text = "POINTS: "
 
 [node name="Value" type="Label" parent="Rows/Stats/PointCounter"]
 margin_left = 52.0
+margin_top = 3.0
 margin_right = 68.0
-margin_bottom = 14.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 5 )
 text = "20"
 
 [node name="Credits" type="Label" parent="Rows"]
 margin_right = 984.0
-margin_bottom = 48.0
-text = "Made by Noah Jacobsen
-Special thanks to Joe Zlonicky
-2021 - Lunatic Games"
+margin_bottom = 89.0
+custom_fonts/font = SubResource( 5 )
+text = "MADE BY  -  NOAH JACOBSEN
+SPECIAL THANKS TO  -  JOE ZLONICKY
+
+2021 - LUNATIC GAMES"
 align = 1
 
 [node name="Message" type="Label" parent="Rows"]
-margin_left = 462.0
-margin_top = 98.0
-margin_right = 522.0
-margin_bottom = 348.0
+margin_left = 369.0
+margin_top = 139.0
+margin_right = 614.0
+margin_bottom = 389.0
 rect_min_size = Vector2( 0, 250 )
 size_flags_horizontal = 4
 size_flags_vertical = 2
+custom_fonts/font = SubResource( 6 )
 text = "Message!"
 align = 1
 valign = 1
 
 [node name="Start" type="Button" parent="Rows"]
-margin_left = 417.0
-margin_top = 398.0
-margin_right = 567.0
-margin_bottom = 418.0
+margin_left = 377.0
+margin_top = 439.0
+margin_right = 606.0
+margin_bottom = 470.0
 rect_min_size = Vector2( 150, 0 )
 size_flags_horizontal = 4
-shortcut = SubResource( 2 )
-text = "Go Ranging"
+custom_fonts/font = SubResource( 7 )
+shortcut = SubResource( 8 )
+text = "GO RANGING"
 
 [node name="Quit" type="Button" parent="Rows"]
 margin_left = 454.0
-margin_top = 468.0
-margin_right = 529.0
-margin_bottom = 488.0
+margin_top = 520.0
+margin_right = 530.0
+margin_bottom = 546.0
 rect_min_size = Vector2( 75, 0 )
 size_flags_horizontal = 4
+custom_fonts/font = SubResource( 5 )
 shortcut = SubResource( 4 )
-text = "Exit"
+text = "EXIT"
 
 [connection signal="pressed" from="Rows/Start" to="." method="_on_Start_pressed"]
 [connection signal="pressed" from="Rows/Quit" to="." method="_on_Quit_pressed"]
