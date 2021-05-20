@@ -5,6 +5,10 @@ const GROUND_Y_CLAMP = 125
 const GROUND_TILE_SIZE = 512
 const SPAWN_MARGIN = 10
 const SPAWN_OUT_BOUND = 128
+const CLOUD_WEIGHT = 0.75
+const CLOUD_MIN = 2
+const CLOUD_MAX = 4
+const CLOUD_FRAMES = 32
 
 export (int) var x_clamp = 125
 export (int) var y_clamp = 150
@@ -48,6 +52,7 @@ func _ready():
 	screen_size = $YSort/Moving/Camera2D.get_viewport_rect().size
 	$YSort/Moving/Player.position.y = y_start
 	generate_ground(null, true)
+	set_cloud_animations()
 
 
 ### Movement
@@ -157,6 +162,20 @@ func _on_RocksTimer_timeout():
 func _on_DivetTimer_timeout():
 	spawn_object(divet_tile.instance(), $DivetTimer, timer_divet_min, timer_divet_max)
 
+func set_cloud_animations():
+	var clouds = $CloudLayer.get_children()
+	var cloud_count = 0
+	for cloud in clouds:
+		if cloud.playing:
+			cloud_count += 1
+	for cloud in clouds:
+		if rand_range(0, 1) > CLOUD_WEIGHT && cloud_count < CLOUD_MAX:
+			cloud.frame = randi() % CLOUD_FRAMES
+			cloud.play("", rand_range(0,1) > 0.5)
+			cloud_count += 1
+			print("Enabled cloud")
+	if cloud_count < CLOUD_MIN:
+		set_cloud_animations()
 
 ### Collision functions
 func collect_static():
