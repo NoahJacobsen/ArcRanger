@@ -9,6 +9,8 @@ const CLOUD_WEIGHT = 0.75
 const CLOUD_MIN = 2
 const CLOUD_MAX = 4
 const CLOUD_FRAMES = 32
+const CLOUD_SIZE = 256
+const CLOUD_SPEED = 100
 
 export (int) var x_clamp = 125
 export (int) var y_clamp = 150
@@ -41,6 +43,7 @@ var game_active = false
 var ground_gen_pos = Vector2()
 var player_speed = 150
 var stunned = false
+var cloud_pos = Vector2()
 
 var health = 3
 var points = 0
@@ -52,6 +55,7 @@ func _ready():
 	screen_size = $YSort/Moving/Camera2D.get_viewport_rect().size
 	$YSort/Moving/Player.position.y = y_start
 	generate_ground(null, true)
+	init_cloud_pos()
 	set_cloud_animations()
 
 
@@ -71,6 +75,7 @@ func _process(delta):
 	$YSort/Moving.position += velocity * delta
 	move_spawn_path($YSort/Moving.position)
 	gui.update_speed(player_speed)
+	move_clouds(delta)
 
 func stun():
 	$StunTimer.wait_time = stun_wait
@@ -176,6 +181,15 @@ func set_cloud_animations():
 			print("Enabled cloud")
 	if cloud_count < CLOUD_MIN:
 		set_cloud_animations()
+
+func init_cloud_pos():
+	for cloud in $CloudLayer.get_children():
+		cloud_pos.x += CLOUD_SIZE
+
+func move_clouds(delta):
+	for cloud in $CloudLayer.get_children():
+		cloud.position.x -= CLOUD_SPEED * delta
+
 
 ### Collision functions
 func collect_static():

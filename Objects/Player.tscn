@@ -141,7 +141,6 @@ position = Vector2( 0, -32 )
 scale = Vector2( 2, 2 )
 frames = SubResource( 25 )
 animation = "straight"
-frame = 4
 playing = true
 
 [node name="LanceArea" type="Area2D" parent="."]
