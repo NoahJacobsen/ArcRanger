@@ -34,16 +34,16 @@ onready var ground_tile = preload("res://Objects/Tiles/Ground.tscn")
 onready var static_field = preload("res://Objects/Tiles/Static.tscn")
 onready var rocks_tile = preload("res://Objects/Tiles/Rocks.tscn")
 onready var divet_tile = preload("res://Objects/Tiles/Divet.tscn")
-onready var spawn_loc = $YSort/Moving/SpawnPath/SpawnLocation
+onready var spawn_loc = $SpawnPath/SpawnLocation
 onready var gui = $GUILayer/GUI
-onready var player = $YSort/Moving/Player
+onready var player = $YSort/Player
 
 var screen_size
 var game_active = false
 var ground_gen_pos = Vector2()
 var player_speed = 150
 var stunned = false
-var cloud_pos = Vector2()
+var move_pos = Vector2()
 
 var health = 3
 var points = 0
@@ -52,10 +52,9 @@ func _ready():
 	randomize()
 	gui.show_message("ARC RANGER")
 	gui.show_buttons()
-	screen_size = $YSort/Moving/Camera2D.get_viewport_rect().size
-	$YSort/Moving/Player.position.y = y_start
+	screen_size = $Camera2D.get_viewport_rect().size
+	player.position.y = y_start
 	generate_ground(null, true)
-	init_cloud_pos()
 	set_cloud_animations()
 
 
@@ -72,10 +71,12 @@ func _process(delta):
 	elif player_speed < player_min_speed:
 		player_speed = player_min_speed
 	var velocity = Vector2(player_speed, 0)
-	$YSort/Moving.position += velocity * delta
-	move_spawn_path($YSort/Moving.position)
+	var movement = velocity * delta
+	move_pos += movement
+	move_spawn_path(move_pos)
+	player.position += movement
+	$Camera2D.position += movement
 	gui.update_speed(player_speed)
-	move_clouds(delta)
 
 func stun():
 	$StunTimer.wait_time = stun_wait
@@ -120,13 +121,13 @@ func quit_game():
 	get_tree().quit()
 
 func move_spawn_path(pos):
-	var curve = $YSort/Moving/SpawnPath.get_curve()
+	var curve = $SpawnPath.get_curve()
 	pos.x += screen_size.x + SPAWN_OUT_BOUND
 	pos.y = y_clamp + SPAWN_MARGIN
 	curve.set_point_position(0, pos)
 	pos.y = screen_size.y - y_clamp_margin - SPAWN_MARGIN
 	curve.set_point_position(1, pos)
-	$YSort/Moving/SpawnPath.set_curve(curve)
+	$SpawnPath.set_curve(curve)
 
 func generate_ground(body, start=false):
 	ground_gen_pos.y = GROUND_Y_CLAMP
@@ -182,13 +183,6 @@ func set_cloud_animations():
 	if cloud_count < CLOUD_MIN:
 		set_cloud_animations()
 
-func init_cloud_pos():
-	for cloud in $CloudLayer.get_children():
-		cloud_pos.x += CLOUD_SIZE
-
-func move_clouds(delta):
-	for cloud in $CloudLayer.get_children():
-		cloud.position.x -= CLOUD_SPEED * delta
 
 
 ### Collision functions
