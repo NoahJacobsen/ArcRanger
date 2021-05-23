@@ -33,9 +33,6 @@ position = Vector2( 512, 0 )
 [node name="Clouds4" parent="CloudLayer" instance=ExtResource( 4 )]
 position = Vector2( 768, 0 )
 
-[node name="Clouds5" parent="CloudLayer" instance=ExtResource( 4 )]
-position = Vector2( 1024, 0 )
-
 [node name="SpawnPath" type="Path2D" parent="."]
 curve = SubResource( 1 )
 
