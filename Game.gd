@@ -5,10 +5,17 @@ const GROUND_Y_CLAMP = 125
 const GROUND_TILE_SIZE = 512
 const SPAWN_MARGIN = 10
 const SPAWN_OUT_BOUND = 128
+const CLOUD_WEIGHT = 0.75
+const CLOUD_MIN = 2
+const CLOUD_MAX = 4
+const CLOUD_FRAMES = 32
+const CLOUD_SIZE = 256
+const CLOUD_SPEED = 100
 
 export (int) var x_clamp = 125
 export (int) var y_clamp = 150
 export (int) var y_clamp_margin = 25
+export (int) var y_restriction_margin = 90
 export (int) var y_start = 300
 export (int) var player_acceleration = 75
 export (int) var player_stun_deceleration = 500
@@ -27,14 +34,16 @@ onready var ground_tile = preload("res://Objects/Tiles/Ground.tscn")
 onready var static_field = preload("res://Objects/Tiles/Static.tscn")
 onready var rocks_tile = preload("res://Objects/Tiles/Rocks.tscn")
 onready var divet_tile = preload("res://Objects/Tiles/Divet.tscn")
-onready var spawn_loc = $YSort/Moving/SpawnPath/SpawnLocation
-onready var gui = $YSort/Moving/GUI
+onready var spawn_loc = $SpawnPath/SpawnLocation
+onready var gui = $GUILayer/GUI
+onready var player = $YSort/Player
 
 var screen_size
 var game_active = false
 var ground_gen_pos = Vector2()
 var player_speed = 150
 var stunned = false
+var move_pos = Vector2()
 
 var health = 3
 var points = 0
@@ -43,9 +52,10 @@ func _ready():
 	randomize()
 	gui.show_message("ARC RANGER")
 	gui.show_buttons()
-	screen_size = $YSort/Moving/Camera2D.get_viewport_rect().size
-	$YSort/Moving/Player.position.y = y_start
+	screen_size = $Camera2D.get_viewport_rect().size
+	player.position.y = y_start
 	generate_ground(null, true)
+	set_cloud_animations()
 
 
 ### Movement
@@ -61,8 +71,11 @@ func _process(delta):
 	elif player_speed < player_min_speed:
 		player_speed = player_min_speed
 	var velocity = Vector2(player_speed, 0)
-	$YSort/Moving.position += velocity * delta
-	move_spawn_path($YSort/Moving.position)
+	var movement = velocity * delta
+	move_pos += movement
+	move_spawn_path(move_pos)
+	player.position += movement
+	$Camera2D.position += movement
 	gui.update_speed(player_speed)
 
 func stun():
@@ -74,6 +87,7 @@ func stun():
 func _on_StunTimer_timeout():
 	print("Stun over")
 	stunned = false
+	player.stunned = false
 
 
 ### Game Mechanics
@@ -92,6 +106,7 @@ func start_game():
 	gui.hide_message()
 	gui.hide_buttons()
 	gui.hide_credits()
+	player.stunned = false
 	
 func game_over():
 	print("GAME OVER")
@@ -101,20 +116,18 @@ func game_over():
 	$StaticTimer.stop()
 	$RocksTimer.stop()
 	$DivetTimer.stop()
-	$StunTimer.stop()
 	
 func quit_game():
 	get_tree().quit()
 
 func move_spawn_path(pos):
-	var curve = $YSort/Moving/SpawnPath.get_curve()
-	var point_pos = Vector2()
+	var curve = $SpawnPath.get_curve()
 	pos.x += screen_size.x + SPAWN_OUT_BOUND
 	pos.y = y_clamp + SPAWN_MARGIN
 	curve.set_point_position(0, pos)
 	pos.y = screen_size.y - y_clamp_margin - SPAWN_MARGIN
 	curve.set_point_position(1, pos)
-	$YSort/Moving/SpawnPath.set_curve(curve)
+	$SpawnPath.set_curve(curve)
 
 func generate_ground(body, start=false):
 	ground_gen_pos.y = GROUND_Y_CLAMP
@@ -124,7 +137,7 @@ func generate_ground(body, start=false):
 			ground_gen_pos.x = 0
 			for x in GROUND_SIZE.x:
 				var tile = ground_tile.instance()
-				var ret = tile.connect("screen_exited", self, "generate_ground")
+				var _ret = tile.connect("screen_exited", self, "generate_ground")
 				tile.position = ground_gen_pos
 				ground_gen_pos.x += GROUND_TILE_SIZE
 				$Tiles.add_child(tile)
@@ -155,22 +168,41 @@ func _on_RocksTimer_timeout():
 func _on_DivetTimer_timeout():
 	spawn_object(divet_tile.instance(), $DivetTimer, timer_divet_min, timer_divet_max)
 
+func set_cloud_animations():
+	var clouds = $CloudLayer.get_children()
+	var cloud_count = 0
+	for cloud in clouds:
+		if cloud.playing:
+			cloud_count += 1
+	for cloud in clouds:
+		if rand_range(0, 1) > CLOUD_WEIGHT && cloud_count < CLOUD_MAX:
+			cloud.frame = randi() % CLOUD_FRAMES
+			cloud.play("", rand_range(0,1) > 0.5)
+			cloud_count += 1
+			print("Enabled cloud")
+	if cloud_count < CLOUD_MIN:
+		set_cloud_animations()
+
+
 
 ### Collision functions
 func collect_static():
-	points += static_value
-	gui.update_points(points)
+	if game_active:
+		points += static_value
+		gui.update_points(points)
 	
 func hit_rocks():
-	health -= 1
-	gui.update_health(health)
-	if (health == 0):
-		game_over()
-	else:
-		stun()
+	if game_active:
+		health -= 1
+		gui.update_health(health)
+		if (health == 0):
+			game_over()
+		else:
+			stun()
 	
 func hit_divet():
-	stun()
+	if game_active:
+		stun()
 
 
 

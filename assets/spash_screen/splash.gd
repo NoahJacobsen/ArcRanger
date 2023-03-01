@@ -5,7 +5,7 @@ const main_menu = preload("res://Game.tscn")
 
 
 func _input(event):
-	if (event.is_action_pressed("ui_start") or event.is_action_pressed("ui_accept")):
+	if (event.is_action_pressed("ui_select") or event.is_action_pressed("ui_accept")):
 		_on_Splash_finished()
 		
 
